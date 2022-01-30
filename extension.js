@@ -57,7 +57,7 @@ function error(message, error) {
             log("[guillotine ERROR] " + message + "\n" + error)
         }
     }
-    if (NotificationLevel <= WARNING) {
+    if (NotificationLevel <= ERROR) {
         if (typeof error === 'undefined') {
             notify("[guillotine ERROR]", message);
         } else {
@@ -88,14 +88,23 @@ class Command {
         // sanity checks
         parseProperties(properties, self, commandChecks);
         Object.assign(this, self);
-
         // setup UI
+        this.UI = new UI.popupMenu.PopupMenuItem(this.title);
         if ("icon" in this) {
-            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI = new UI.popupMenu.PopupImageMenuItem(this.title, Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg"));
-            else this.UI = new UI.popupMenu.PopupImageMenuItem(this.title, this.icon);
+            this.UI.icon = new St.Icon({
+                style_class: "popup-menu-icon"
+            });
+            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+            else if (this.icon.charAt(0) == "/") this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
+            else if (this.icon.charAt(0) == "~") {
+                let home = GLib.get_home_dir();
+                this.icon = this.icon.substr(1);
+                this.icon = home.concat(this.icon);
+                this.UI.icon.set_gicon(Gio.icon_new_for_string(this.icon));
+            }
+            else this.UI.icon.icon_name = this.icon;
+            this.UI.insert_child_at_index(this.UI.icon, 1);
         }
-        else
-            this.UI = new UI.popupMenu.PopupMenuItem(this.title);
         if (!("command" in this))
             this.UI.setSensitive(false);
 
@@ -177,8 +186,17 @@ class Switch {
         this.UI = new UI.popupMenu.PopupSwitchMenuItem(this.title, false);
 
         if ("icon" in this) {
-            this.UI.icon = new St.Icon({ style_class: 'popup-menu-icon' });
+            this.UI.icon = new St.Icon({
+                style_class: "popup-menu-icon"
+            });
             if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+            else if (this.icon.charAt(0) == "/") this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
+            else if (this.icon.charAt(0) == "~") {
+                let home = GLib.get_home_dir();
+                this.icon = this.icon.substr(1);
+                this.icon = home.concat(this.icon);
+                this.UI.icon.set_gicon(Gio.icon_new_for_string(this.icon));
+            }
             else this.UI.icon.icon_name = this.icon;
             this.UI.insert_child_at_index(this.UI.icon, 1);
         }
@@ -353,12 +371,22 @@ class SubMenu {
         // sanity checks
         parseProperties(properties, self, menuChecks);
         Object.assign(this, self);
-        debug(this.icon);
+        this.UI = new UI.popupMenu.PopupSubMenuMenuItem(this.title);
         if ("icon" in this) {
-            this.UI = new UI.popupMenu.PopupSubMenuMenuItem(this.title, true);
+            this.UI.icon = new St.Icon({
+                style_class: "popup-menu-icon"
+            });
             if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+            else if (this.icon.charAt(0) == "/") this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
+            else if (this.icon.charAt(0) == "~") {
+                let home = GLib.get_home_dir();
+                this.icon = this.icon.substr(1);
+                this.icon = home.concat(this.icon);
+                this.UI.icon.set_gicon(Gio.icon_new_for_string(this.icon));
+            }
             else this.UI.icon.icon_name = this.icon;
-        } else this.UI = new UI.popupMenu.PopupSubMenuMenuItem(this.title);
+            this.UI.insert_child_at_index(this.UI.icon, 1);
+        }
 
         this.items = parseMenu(self.items);
         for (const item in this.items) {
@@ -402,8 +430,8 @@ class Guillotine {
 
     enable() {
         if (this.button) {
-            info("Change of config detected: restarting " + Me.metadata.name);
             this.disable();
+            info("Change of config detected: restarting " + Me.metadata.name);
         } else {
             info("Enabling " + Me.metadata.name + " version " + Me.metadata.version);
         }
@@ -443,11 +471,25 @@ class Guillotine {
         }
 
         // icon
-        this.icon = new St.Icon({ style_class: "system-status-icon" });
-        if (this.settings.icon.toLowerCase() == "guillotine-symbolic")
-            this.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
-        else
-            this.icon.icon_name = this.settings.icon;
+        // this.icon = new St.Icon({ style_class: "system-status-icon", fallback_icon_name: "dialog-error" });
+        this.icon = new St.Icon({
+            style_class: "popup-menu-icon", fallback_icon_name: "dialog-error"
+        });
+        if (this.settings.icon.toLowerCase() === "guillotine-symbolic") this.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+        else if (this.settings.icon.charAt(0) == "/") this.icon.gicon = Gio.icon_new_for_string(this.settings.icon);
+        else if (this.settings.icon.charAt(0) == "~") {
+            let home = GLib.get_home_dir();
+            this.settings.icon = this.settings.icon.substr(1);
+            this.settings.icon = home.concat(this.settings.icon);
+            this.UI.icon.set_gicon(Gio.icon_new_for_string(this.settings.icon));
+        }
+        else this.icon.icon_name = this.settings.icon;
+        // this.UI.insert_child_at_index(this.UI.icon, 1);
+
+        // if (this.settings.icon.toLowerCase() == "guillotine-symbolic")
+        //     this.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+        // else
+        //     this.icon.icon_name = this.settings.icon;
 
         // button
         this.button = new UI.panelMenu.Button(0.0, "guillotine", false);

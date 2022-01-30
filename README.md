@@ -126,7 +126,7 @@ The configuration has two segments: `settings` and `menu`.
 
 ### settings
 
-- `icon` (string): name of a system icon to show as the status icon
+- `icon` (string): path or name of an [icon](#icons)
 - `logLevel` (string): the log level of the extenions. Any of the following values is valid:
   - `debug`
   - `info`
@@ -147,7 +147,7 @@ The menu is an array of items, each being one of the following types.
 
 - `type`: `command`
 - `title` (string): title to show
-- `icon` (string): name of a system icon to show
+- `icon` (string): path or name of an [icon](#icons)
 - `command` (string): command to execute
 - `instancing` (string): how to handle a running process. Either of the following values is valid:
   - `singleInstance`: the menu item is disabled until the old process finished
@@ -158,7 +158,7 @@ The menu is an array of items, each being one of the following types.
 
 - `type`: `switch`
 - `title` (string): title to show
-- `icon` (string): name of a system icon to show
+- `icon` (string): path or name of an [icon](#icons)
 - `start` (string): command to execute when switching from off to on
 - `stop` (string): command to execute when switching from on to off
 - `check` (string): command to run when checking the toggle stat
@@ -176,7 +176,7 @@ If no interval is defined, it defaults to `interval_s` at 10 seconds. If multipl
 
 - `type`: `switch`
 - `title` (string): title to show
-- `icon` (string): name of a system icon to show
+- `icon` (string): path or name of an [icon](#icons)
 - `items` ([]): an arry of items, see [menu](###menu)
 
 #### 4. separator
@@ -207,12 +207,18 @@ A switch is strictly running a single instance of all commands. You won't be abl
 
 ### Icons
 
-Icons can be found by searching any subdirectory of the following directories:
+The first character of the `icon` option determines how the option is interpreted:
+
+- `/`: the full path to an icon file
+- `~`: the relative path to an icon file in the users home directory
+- otherwise: the name of a system icon
+
+If the icon cannot be loaded, the fall back depends on the icon type: a system icon that cannot be found is replaced by the "image-missing" icon. If an icon defined by a path cannot be loaded, there will be no replacement and no warning.
+
+`gtk3-icon-browser` and `gtk4-icon-browser` are apps that shows the selection of standard system icons with their name. There may be more icons available on your system in the following directories:
 
 - ~/.local/share/icons
 - /usr/share/icons
-
-`gtk3-icon-browser` is an app that shows a selection of system icons. Personally I use glade to browse the local icons.
 
 ## Change History
 
@@ -251,6 +257,11 @@ Icons can be found by searching any subdirectory of the following directories:
     - a notification will be raised if in use (this will be removed in the next version)
 - v9: 13.11.2021
   - fix a complaint from extension review
+- v10: 30.01.2022
+  - move repository to gitlab and archive the old repository at [github](https://github.com/ente76/guillotine)
+  - fix a lint warning in README.md
+  - fix an error in notifications
+  - implement icons loaded by path
 
 ## ToDo
 
@@ -258,7 +269,7 @@ The extension is considered stable. No further improvements are planned for now.
 
 ## Contributors
 
-- [ente](https://github.com/ente76)
+- [ente](https://gitlab.com/ente76)
 - [hashstat](https://github.com/hashstat)
 - [aliakseiz](https://github.com/aliakseiz)
 
