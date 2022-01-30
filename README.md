@@ -267,6 +267,8 @@ System icons are stored in the following directories:
   - implement icons loaded by path
   - remove `killBeforeRestart`
   - implement deprecation warning for `interval` on switches
+- v11: 30.01.2022
+  - automatic version number adjustment by [gnome extensions](https://extensions.gnome.org) after uploading a corrected package
 
 ## ToDo
 
