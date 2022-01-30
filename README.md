@@ -177,7 +177,7 @@ If no interval is defined, it defaults to `interval_s` at 10 seconds. If multipl
 - `type`: `switch`
 - `title` (string): title to show
 - `icon` (string): path or name of an [icon](#icons)
-- `items` ([]): an arry of items, see [menu](###menu)
+- `items` ([]): an arry of items, see [menu](#menu)
 
 #### 4. separator
 
@@ -262,6 +262,7 @@ If the icon cannot be loaded, the fall back depends on the icon type: a system i
   - fix a lint warning in README.md
   - fix an error in notifications
   - implement icons loaded by path
+  - remove `killBeforeRestart`
 
 ## ToDo
 
