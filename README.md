@@ -209,16 +209,18 @@ A switch is strictly running a single instance of all commands. You won't be abl
 
 The first character of the `icon` option determines how the option is interpreted:
 
-- `/`: the full path to an icon file
-- `~`: the relative path to an icon file in the users home directory
-- otherwise: the name of a system icon
+- `"/"`: the full path to an icon file, e.g., `"/home/user/icons/custom.png"`
+- `"~"`: the relative path to an icon file in the users home directory, e.g., `"~/icons/custom.png"`
+- otherwise: the name of a system icon, e.g., `"dialog-warning"`
 
 If the icon cannot be loaded, the fall back depends on the icon type: a system icon that cannot be found is replaced by the "image-missing" icon. If an icon defined by a path cannot be loaded, there will be no replacement and no warning.
 
-`gtk3-icon-browser` and `gtk4-icon-browser` are apps that shows the selection of standard system icons with their name. There may be more icons available on your system in the following directories:
+System icons are stored in the following directories:
 
 - ~/.local/share/icons
 - /usr/share/icons
+
+`gtk3-icon-browser` and `gtk4-icon-browser` are apps that shows the selection of standard system icons with their name. The package name for these apps varies by distribution. `Arch Linux` provides the apps in packages [`gtk3-demos`](https://archlinux.org/packages/extra/x86_64/gtk3-demos/) and [`gtk4-demos`](https://archlinux.org/packages/extra/x86_64/gtk4-demos/) respectively.
 
 ## Change History
 
@@ -277,7 +279,7 @@ The extension is considered stable. No further improvements are planned for now.
 
 ## License
 
-Guillotine: a gnome extension designed for efficiently carrying out executions of commands from a customizable menu
+Guillotine: a gnome extension designed for efficiently carrying out executions of commands from a customizable menu  
 Copyright (C) 2021 Christian Klaue [mail@ck76.de]
 
 This program is free software: you can redistribute it and/or modify
