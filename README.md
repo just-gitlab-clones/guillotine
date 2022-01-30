@@ -263,6 +263,7 @@ If the icon cannot be loaded, the fall back depends on the icon type: a system i
   - fix an error in notifications
   - implement icons loaded by path
   - remove `killBeforeRestart`
+  - implement deprecation warning for `interval` on switches
 
 ## ToDo
 

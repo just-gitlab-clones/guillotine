@@ -207,6 +207,10 @@ class Switch {
         } else {
             error("Switch '" + this.title + "' has no check command defined. Switch is disabled.");
         }
+        if (("interval" in this)) {
+            notify("[guillotine WARNING] DEPRECATED: 'interval' on '" + this.title + "'", "The option 'interval' for switch has been deprecated. Please use 'interval_s' (recommended) or 'interval_ms' instead.");
+            log("[guillotine WARNING] " + "DEPRECATED: 'interval' on '" + this.title + "'. The option 'interval' for switch has been deprecated. Please use 'interval_s' (recommended) or 'interval_ms' instead.");
+        }
         if (!("interval" in this) && !("interval_ms" in this) && !("interval_s" in this)) {
             this.interval_s = 10;
         }
@@ -227,7 +231,6 @@ class Switch {
     }
 
     switch() {
-        info("switch fn");
         // don't allow another interaction with this item
         this.UI.setSensitive(false);
         // cancel all automatic interval checks & signal manual switching
