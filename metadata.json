@@ -7,6 +7,7 @@
     "settings-schema": "org.gnome.shell.extensions.guillotine",
     "shell-version": [
         "40",
-        "41"
+        "41",
+        "42"
     ]
 }
