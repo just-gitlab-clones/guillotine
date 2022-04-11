@@ -271,6 +271,8 @@ System icons are stored in the following directories:
   - automatic version number adjustment by [gnome extensions](https://extensions.gnome.org) after uploading a corrected package
 - v12: 31.01.2022
   - fix a packaging issue
+- v13: 11.04.2022
+  - add gnome 42 compatibility (provided by [aliakseiz](https://gitlab.com/aliakseiz))
 
 ## ToDo
 
@@ -280,7 +282,9 @@ The extension is considered stable. No further improvements are planned for now.
 
 - [ente](https://gitlab.com/ente76)
 - [hashstat](https://github.com/hashstat)
-- [aliakseiz](https://github.com/aliakseiz)
+- aluakseiz:
+  - [github](https://github.com/aliakseiz)
+  - [gitlab](https://gitlab.com/aliakseiz)
 
 ## License
 
