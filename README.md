@@ -271,8 +271,12 @@ System icons are stored in the following directories:
   - automatic version number adjustment by [gnome extensions](https://extensions.gnome.org) after uploading a corrected package
 - v12: 31.01.2022
   - fix a packaging issue
-- v13: 11.04.2022
+- v13: 31.01.2022
+  - fix a packaging issue
+- v14: 11.04.2022
   - add gnome 42 compatibility (provided by [aliakseiz](https://gitlab.com/aliakseiz))
+- v15: 11.04.2022
+  - fix change history and version mismatch
 
 ## ToDo
 
