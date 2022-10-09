@@ -6,7 +6,7 @@
     <key type="s" name="config">
         <default>".config/guillotine.json"</default>
     	  <summary>Config File Path</summary>
-        <description>Absolute path to your configuration file. Leave empty to use ~/.config/qcm.json.</description>
+        <description>Absolute path to your configuration file. Leave empty to use ~/.config/guillotine.json.</description>
     </key>
   </schema>
 </schemalist>
