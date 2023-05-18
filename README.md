@@ -1,15 +1,21 @@
 <!-- markdownlint-disable-next-line MD041 -->
-[![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-or%20I%20sing-53a0d0?style=flat&logo=Buy-Me-A-Coffee)](https://www.buymeacoffee.com/ente)  [![donate@paypal](https://img.shields.io/badge/paypal-donation-53a0d0?style=flat&logo=paypal)](https://www.paypal.com/donate?hosted_button_id=CRGNTJBS4AD4G)
+
+[![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-or%20I%20sing-53a0d0?style=flat&logo=Buy-Me-A-Coffee)](https://www.buymeacoffee.com/ente)
+[![donate@paypal](https://img.shields.io/badge/paypal-donation-53a0d0?style=flat&logo=paypal)](https://www.paypal.com/donate?hosted_button_id=CRGNTJBS4AD4G)
 
 # Guillotine
 
-Guillotine is a gnome extension designed for efficiently carrying out executions of commands from a customizable menu. Simply speaking: it is a highly customizable menu that enables you to launch commands and toggle services.
+Guillotine is a gnome extension designed for efficiently carrying out executions
+of commands from a customizable menu. Simply speaking: it is a highly
+customizable menu that enables you to launch commands and toggle services.
 
 ![example.png](example.png)
 
 ## Configuration
 
-If no configuration is found, a default config is restored at `~/.config/guillotine.json`. Whenever the configuration file changes, the extension reloads automatically.
+If no configuration is found, a default config is restored at
+`~/.config/guillotine.json`. Whenever the configuration file changes, the
+extension reloads automatically.
 
 The configuration has two segments: `settings` and `menu`.
 
@@ -128,12 +134,14 @@ The configuration has two segments: `settings` and `menu`.
 ### settings
 
 - `icon` (string): path or name of an [icon](#icons)
-- `logLevel` (string): the log level of the extenions. Any of the following values is valid:
+- `logLevel` (string): the log level of the extenions. Any of the following
+  values is valid:
   - `debug`
   - `info`
   - `warning` (default)
   - `error`
-- `notificationLevel` (string): the notification level of the extension. Any of the following values is valid:
+- `notificationLevel` (string): the notification level of the extension. Any of
+  the following values is valid:
   - not defined (default): notifications are disabled
   - `debug`
   - `info`
@@ -150,10 +158,13 @@ The menu is an array of items, each being one of the following types.
 - `title` (string): title to show
 - `icon` (string): path or name of an [icon](#icons)
 - `command` (string): command to execute
-- `instancing` (string): how to handle a running process. Either of the following values is valid:
+- `instancing` (string): how to handle a running process. Either of the
+  following values is valid:
   - `singleInstance`: the menu item is disabled until the old process finished
-  - `multipleInstances` (default): no restrictions; multiple instances may be executed in parallel
-- `killOnDisable` (boolean): whether the process gets killed when the extension gets disabled, defaults to `true`
+  - `multipleInstances` (default): no restrictions; multiple instances may be
+    executed in parallel
+- `killOnDisable` (boolean): whether the process gets killed when the extension
+  gets disabled, defaults to `true`
 
 #### 2. switch
 
@@ -169,7 +180,14 @@ The menu is an array of items, each being one of the following types.
 - `interval_ms` (number): time between 2 checks in milliseconds
 - `interval` (number): **[deprecated]** same as `interval_ms`
 
-If no interval is defined, it defaults to `interval_s` at 10 seconds. If multiple intervals are defined, `interval_s` has highest priority. The interval is the length of the pause between 2 checks, i.e. if the command assigned to `check` takes 1s to execute and `interval_s` is set to 2, the command is spawned every 3s. `interval_s` is less precise as `interval_ms` also in a way that the interval is not guaranteed to be precisely equal to the requested period. In return `interval_s` is supposed to consume less energy. `interval_ms` may become deprecated in the near future if `interval_s` prooves to be superior.
+If no interval is defined, it defaults to `interval_s` at 10 seconds. If
+multiple intervals are defined, `interval_s` has highest priority. The interval
+is the length of the pause between 2 checks, i.e. if the command assigned to
+`check` takes 1s to execute and `interval_s` is set to 2, the command is spawned
+every 3s. `interval_s` is less precise as `interval_ms` also in a way that the
+interval is not guaranteed to be precisely equal to the requested period. In
+return `interval_s` is supposed to consume less energy. `interval_ms` may become
+deprecated in the near future if `interval_s` prooves to be superior.
 
 **WARNING**: a (very) short interval may cause Gnome to become unresponsive.
 
@@ -186,19 +204,47 @@ If no interval is defined, it defaults to `interval_s` at 10 seconds. If multipl
 
 ### Commands
 
-`start`, `stop`, `check` and `command` are commands to be executed. It is highly recommended to test these commands extensively in a shell before adjusting the configuration. A shell that actually shows return codes (e.g. `zsh` with `powerlevel10k`) is recommended especially when testing switches.
+`start`, `stop`, `check` and `command` are commands to be executed. It is highly
+recommended to test these commands extensively in a shell before adjusting the
+configuration. A shell that actually shows return codes (e.g. `zsh` with
+`powerlevel10k`) is recommended especially when testing switches.
 
-The return code of all commands is checked. For `start`, `stop` and `command` a non-zero return code will currently only result in a log entry. For `check` the return code determines the switch state and no log entry is created.
+The return code of all commands is checked. For `start`, `stop` and `command` a
+non-zero return code will currently only result in a log entry. For `check` the
+return code determines the switch state and no log entry is created.
 
-There is no shell environment that commands are executed in. To use shell syntax, simply start any shell of your preference and ask the shell to execute the command: `"check": "sh -c 'if [ -f /folder/file ]; then exit 0; else exit 1; fi'"` which could be boiled down to `"check": "sh -c 'exit $([ -f /folder/file ])'"`.
+There is no shell environment that commands are executed in. To use shell
+syntax, simply start any shell of your preference and ask the shell to execute
+the command:
+`"check": "sh -c 'if [ -f /folder/file ]; then exit 0; else exit 1; fi'"` which
+could be boiled down to `"check": "sh -c 'exit $([ -f /folder/file ])'"`.
 
-Executing multiple commands with a single menu item works by calling a shell as well: `"command": "sh -c 'command1; command2'"`.
+Executing multiple commands with a single menu item works by calling a shell as
+well: `"command": "sh -c 'command1; command2'"`.
 
-Executing commands directly or using a shell will happen in background. If you need foreground feedback, execute a terminal and pass the actual command to the terminal: `"command": "gnome-terminal -e 'journalctl -f GNOME_SHELL_EXTENSION_UUID=guillotine@fopdoodle.net'"`.
+Executing commands directly or using a shell will happen in background. If you
+need foreground feedback, execute a terminal and pass the actual command to the
+terminal:
+`"command": "gnome-terminal -e 'journalctl -f GNOME_SHELL_EXTENSION_UUID=guillotine@fopdoodle.net'"`.
 
-The options `singleInstance` and `killOnDisable` have no impact on background processes, i.e., these options don't work on something like `sh -c 'long-running-command &'`. Some applications are implicitly behaving like this, e.g. firefox & gnome-terminal.
+The options `singleInstance` and `killOnDisable` have no impact on background
+processes, i.e., these options don't work on something like
+`sh -c 'long-running-command &'`. Some applications are implicitly behaving like
+this, e.g. firefox & gnome-terminal.
 
-A switch is strictly running a single instance of all commands. You won't be able to access the menu item while the `start` or the `stop` command are executed. To be more precise: a `start` and a `stop` command will disable the menu and trigger a `check` command. On return of the `check` command the menu item gets enabled and switch to the correct state depending on the return code. The operation of a switch can be best observed on the following example: Initially the switch is in state `off`. When manually switching to `on`, the switch becomes disabled (can't be accessed). The `start` command will be executed but it will always be considered a failure (return code != 0, an error is logged) and it will trigger an immediate check. The check command will last 10 seconds before returning that the switch is `off` (return code != 0, no error is logged). The switch will be returned to state `off` and the switch will be enabled for user input again.
+A switch is strictly running a single instance of all commands. You won't be
+able to access the menu item while the `start` or the `stop` command are
+executed. To be more precise: a `start` and a `stop` command will disable the
+menu and trigger a `check` command. On return of the `check` command the menu
+item gets enabled and switch to the correct state depending on the return code.
+The operation of a switch can be best observed on the following example:
+Initially the switch is in state `off`. When manually switching to `on`, the
+switch becomes disabled (can't be accessed). The `start` command will be
+executed but it will always be considered a failure (return code != 0, an error
+is logged) and it will trigger an immediate check. The check command will last
+10 seconds before returning that the switch is `off` (return code != 0, no error
+is logged). The switch will be returned to state `off` and the switch will be
+enabled for user input again.
 
 ```json
 "start": "sh -c 'exit 1'",
@@ -208,20 +254,29 @@ A switch is strictly running a single instance of all commands. You won't be abl
 
 ### Icons
 
-The first character of the `icon` option determines how the option is interpreted:
+The first character of the `icon` option determines how the option is
+interpreted:
 
 - `"/"`: the full path to an icon file, e.g., `"/home/user/icons/custom.png"`
-- `"~"`: the relative path to an icon file in the users home directory, e.g., `"~/icons/custom.png"`
+- `"~"`: the relative path to an icon file in the users home directory, e.g.,
+  `"~/icons/custom.png"`
 - otherwise: the name of a system icon, e.g., `"dialog-warning"`
 
-If the icon cannot be loaded, the fall back depends on the icon type: a system icon that cannot be found is replaced by the "image-missing" icon. If an icon defined by a path cannot be loaded, there will be no replacement and no warning.
+If the icon cannot be loaded, the fall back depends on the icon type: a system
+icon that cannot be found is replaced by the "image-missing" icon. If an icon
+defined by a path cannot be loaded, there will be no replacement and no warning.
 
 System icons are stored in the following directories:
 
 - ~/.local/share/icons
 - /usr/share/icons
 
-`gtk3-icon-browser` and `gtk4-icon-browser` are apps that shows the selection of standard system icons with their name. The package name for these apps varies by distribution. `Arch Linux` provides the apps in packages [`gtk3-demos`](https://archlinux.org/packages/extra/x86_64/gtk3-demos/) and [`gtk4-demos`](https://archlinux.org/packages/extra/x86_64/gtk4-demos/) respectively.
+`gtk3-icon-browser` and `gtk4-icon-browser` are apps that shows the selection of
+standard system icons with their name. The package name for these apps varies by
+distribution. `Arch Linux` provides the apps in packages
+[`gtk3-demos`](https://archlinux.org/packages/extra/x86_64/gtk3-demos/) and
+[`gtk4-demos`](https://archlinux.org/packages/extra/x86_64/gtk4-demos/)
+respectively.
 
 ## Change History
 
@@ -243,11 +298,13 @@ System icons are stored in the following directories:
   - button for buy-me-a-coffee added
   - button for paypal donations added
 - v5: 30.04.2021:
-  - configurable status icon (provided by [hashstat](https://github.com/hashstat))
+  - configurable status icon (provided by
+    [hashstat](https://github.com/hashstat))
 - v6: 14.06.2021
   - adjust gnome version number
 - v7: 06.11.2021
-  - add gnome 41 compatibility (provided by [aliakseiz](https://github.com/aliakseiz))
+  - add gnome 41 compatibility (provided by
+    [aliakseiz](https://github.com/aliakseiz))
 - v8: 13.11.2021
   - improve the documentation of commands
   - implement exception handling for malformed commands
@@ -256,25 +313,31 @@ System icons are stored in the following directories:
   - implement shut down functionality for switch commands
   - prepare a set of test cases
   - implement notifications based on log entries with separate level filter
-  - removed `killBeforeRestart` option from `command` (complex functionality with limited use)
-    - a notification will be raised if in use (this will be removed in the next version)
+  - removed `killBeforeRestart` option from `command` (complex functionality
+    with limited use)
+    - a notification will be raised if in use (this will be removed in the next
+      version)
 - v9: 13.11.2021
   - fix a complaint from extension review
 - v10: 30.01.2022
-  - move repository to gitlab and archive the old repository at [github](https://github.com/ente76/guillotine)
+  - move repository to gitlab and archive the old repository at
+    [github](https://github.com/ente76/guillotine)
   - fix a lint warning in README.md
   - fix an error in notifications
   - implement icons loaded by path
   - remove `killBeforeRestart`
   - implement deprecation warning for `interval` on switches
 - v11: 30.01.2022
-  - automatic version number adjustment by [gnome extensions](https://extensions.gnome.org) after uploading a corrected package
+  - automatic version number adjustment by
+    [gnome extensions](https://extensions.gnome.org) after uploading a corrected
+    package
 - v12: 31.01.2022
   - fix a packaging issue
 - v13: 31.01.2022
   - fix a packaging issue
 - v14: 11.04.2022
-  - add gnome 42 compatibility (provided by [aliakseiz](https://gitlab.com/aliakseiz))
+  - add gnome 42 compatibility (provided by
+    [aliakseiz](https://gitlab.com/aliakseiz))
 - v15: 11.04.2022
   - fix change history and version mismatch
 - v16: 03.11.2022
@@ -282,6 +345,8 @@ System icons are stored in the following directories:
   - add gnome 43 compatibility
 - v17: 03.11.2022
   - fix release date for v16 in change history
+- v18: 07.05.2023
+  - add gnome 44 compatibility
 
 ## ToDo
 
@@ -297,20 +362,20 @@ The extension is considered stable. No further improvements are planned for now.
 
 ## License
 
-Guillotine: a gnome extension designed for efficiently carrying out executions of commands from a customizable menu  
+Guillotine: a gnome extension designed for efficiently carrying out executions
+of commands from a customizable menu  
 Copyright (C) 2021 Christian Klaue [mail@ck76.de]
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
 
 Individual licenses may be granted upon request.

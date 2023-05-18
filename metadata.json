@@ -5,5 +5,5 @@
   "version": 17,
   "url": "https://gitlab.com/ente76/guillotine/",
   "settings-schema": "org.gnome.shell.extensions.guillotine",
-  "shell-version": ["40", "41", "42", "43"]
+  "shell-version": ["40", "41", "42", "43", "44"]
 }
