@@ -178,7 +178,6 @@ The menu is an array of items, each being one of the following types.
   - other exit code: the service is stopped, the switch is `off`
 - `interval_s` (number): time between 2 checks in seconds
 - `interval_ms` (number): time between 2 checks in milliseconds
-- `interval` (number): **[deprecated]** same as `interval_ms`
 
 If no interval is defined, it defaults to `interval_s` at 10 seconds. If
 multiple intervals are defined, `interval_s` has highest priority. The interval
@@ -347,6 +346,11 @@ respectively.
   - fix release date for v16 in change history
 - v18: 07.05.2023
   - add gnome 44 compatibility
+- v19: 11.10.2023
+  - gnome 45 compatibility
+    - this version update required some bigger, breaking changes
+    - compatibility to previous gnome versions is lost
+  - removed `interval` on switches (deprecated since v8)
 
 ## ToDo
 

@@ -3,12 +3,13 @@
 
 'use strict';
 
-const UI = imports.ui;
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const St = imports.gi.St;
-
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import St from 'gi://St';
+import * as uiMain from 'resource:///org/gnome/shell/ui/main.js';
+import * as uiPopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as uiPanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 const DEBUG = 0;
 const INFO = 1;
@@ -67,7 +68,7 @@ function error(message, error) {
 }
 
 function notify(message, details) {
-    UI.main.notify(message, details || "");
+    uiMain.notify(message, details || "");
 }
 
 /******************************************************************************/
@@ -81,7 +82,7 @@ const commandChecks = [{ name: "title", type: "string", default: "???" },
 { name: "killOnDisable", type: "boolean", default: true }];
 
 class Command {
-    constructor(properties) {
+    constructor(properties, extPath) {
         this.canceled = false;
         let self = {};
 
@@ -89,12 +90,12 @@ class Command {
         parseProperties(properties, self, commandChecks);
         Object.assign(this, self);
         // setup UI
-        this.UI = new UI.popupMenu.PopupMenuItem(this.title);
+        this.UI = new uiPopupMenu.PopupMenuItem(this.title);
         if ("icon" in this) {
             this.UI.icon = new St.Icon({
                 style_class: "popup-menu-icon"
             });
-            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(extPath + "/guillotine-symbolic.svg");
             else if (this.icon.charAt(0) == "/") this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
             else if (this.icon.charAt(0) == "~") {
                 let home = GLib.get_home_dir();
@@ -166,12 +167,11 @@ const switchChecks = [{ name: "title", type: "string", default: "???" },
 { name: "start", type: "string" },
 { name: "stop", type: "string" },
 { name: "check", type: "string" },
-{ name: "interval", type: "number" },
 { name: "interval_s", type: "number" },
 { name: "interval_ms", type: "number" }];
 
 class Switch {
-    constructor(properties) {
+    constructor(properties, extPath) {
         this.canceled = false;
         let self = {};
 
@@ -179,13 +179,13 @@ class Switch {
         parseProperties(properties, self, switchChecks);
         Object.assign(this, self);
 
-        this.UI = new UI.popupMenu.PopupSwitchMenuItem(this.title, false);
+        this.UI = new uiPopupMenu.PopupSwitchMenuItem(this.title, false);
 
         if ("icon" in this) {
             this.UI.icon = new St.Icon({
                 style_class: "popup-menu-icon"
             });
-            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(extPath + "/guillotine-symbolic.svg");
             else if (this.icon.charAt(0) == "/") this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
             else if (this.icon.charAt(0) == "~") {
                 let home = GLib.get_home_dir();
@@ -207,23 +207,11 @@ class Switch {
         } else {
             error("Switch '" + this.title + "' has no check command defined. Switch is disabled.");
         }
-        if (("interval" in this)) {
-            notify("[guillotine WARNING] DEPRECATED: 'interval' on '" + this.title + "'", "The option 'interval' for switch has been deprecated. Please use 'interval_s' (recommended) or 'interval_ms' instead.");
-            log("[guillotine WARNING] " + "DEPRECATED: 'interval' on '" + this.title + "'. The option 'interval' for switch has been deprecated. Please use 'interval_s' (recommended) or 'interval_ms' instead.");
-        }
-        if (!("interval" in this) && !("interval_ms" in this) && !("interval_s" in this)) {
+        if (!("interval_ms" in this) && !("interval_s" in this)) {
             this.interval_s = 10;
         }
         if (("interval_s" in this)) {
             delete this.interval_ms;
-            delete this.interval;
-        }
-        if (("interval_ms" in this)) {
-            delete this.interval;
-        }
-        if (("interval" in this)) {
-            this.interval_ms = this.interval;
-            delete this.interval;
         }
 
         this.processes = {};
@@ -365,17 +353,17 @@ const menuChecks = [{ name: "title", type: "string", default: "???" },
 { name: "items", type: "object" }];
 
 class SubMenu {
-    constructor(properties) {
+    constructor(properties, extPath) {
         let self = {};
         // sanity checks
         parseProperties(properties, self, menuChecks);
         Object.assign(this, self);
-        this.UI = new UI.popupMenu.PopupSubMenuMenuItem(this.title);
+        this.UI = new uiPopupMenu.PopupSubMenuMenuItem(this.title);
         if ("icon" in this) {
             this.UI.icon = new St.Icon({
                 style_class: "popup-menu-icon"
             });
-            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+            if (this.icon.toLowerCase() === "guillotine-symbolic") this.UI.icon.gicon = Gio.icon_new_for_string(extPath + "/guillotine-symbolic.svg");
             else if (this.icon.charAt(0) == "/") this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
             else if (this.icon.charAt(0) == "~") {
                 let home = GLib.get_home_dir();
@@ -387,7 +375,7 @@ class SubMenu {
             this.UI.insert_child_at_index(this.UI.icon, 1);
         }
 
-        this.items = parseMenu(self.items);
+        this.items = parseMenu(self.items, extPath);
         for (const item in this.items) {
             this.UI.menu.addMenuItem(this.items[item].UI);
         }
@@ -402,9 +390,9 @@ class SubMenu {
 }
 
 class Separator {
-    constructor(properties) {
+    constructor(properties, extPath) {
         debug("Separator initialized.");
-        this.UI = new UI.popupMenu.PopupSeparatorMenuItem(this.title);
+        this.UI = new uiPopupMenu.PopupSeparatorMenuItem(this.title);
     }
 
     cancel() {
@@ -422,17 +410,18 @@ const settingsChecks = [
     { name: "notificationlevel", type: "string", values: ["debug", "info", "warning", "error"] }
 ];
 
-class Guillotine {
-    constructor(meta) {
-        info("Initializing " + Me.metadata.name + " version " + Me.metadata.version);
+export default class Guillotine extends Extension {
+    constructor(metadata) {
+        super(metadata);
+        info("Initializing " + this.metadata.name + " version " + this.metadata.version);
     }
 
     enable() {
         if (this.button) {
             this.disable();
-            info("Change of config detected: restarting " + Me.metadata.name);
+            info("Change of config detected: restarting " + this.metadata.name);
         } else {
-            info("Enabling " + Me.metadata.name + " version " + Me.metadata.version);
+            info("Enabling " + this.metadata.name + " version " + this.metadata.version);
         }
         this.menu = [];
         try {
@@ -442,7 +431,7 @@ class Guillotine {
 
             this.settings = {};
             parseProperties(this.config.settings, this.settings, settingsChecks);
-            this.menu = parseMenu(this.config.menu);
+            this.menu = parseMenu(this.config.menu, this.path);
         }
         catch (e) {
             error("Loading config failed.", e);
@@ -453,9 +442,9 @@ class Guillotine {
             });
 
             // button
-            this.button = new UI.panelMenu.Button();
+            this.button = new uiPanelMenu.Button();
             this.button.add_child(this.icon);
-            UI.main.panel.addToStatusArea(Me.metadata.uuid, this.button);
+            uiMain.panel.addToStatusArea(this.metadata.uuid, this.button);
             return;
         }
 
@@ -474,7 +463,7 @@ class Guillotine {
         this.icon = new St.Icon({
             style_class: "popup-menu-icon", fallback_icon_name: "dialog-error"
         });
-        if (this.settings.icon.toLowerCase() === "guillotine-symbolic") this.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
+        if (this.settings.icon.toLowerCase() === "guillotine-symbolic") this.icon.gicon = Gio.icon_new_for_string(this.path + "/guillotine-symbolic.svg");
         else if (this.settings.icon.charAt(0) == "/") this.icon.gicon = Gio.icon_new_for_string(this.settings.icon);
         else if (this.settings.icon.charAt(0) == "~") {
             let home = GLib.get_home_dir();
@@ -483,25 +472,17 @@ class Guillotine {
             this.UI.icon.set_gicon(Gio.icon_new_for_string(this.settings.icon));
         }
         else this.icon.icon_name = this.settings.icon;
-        // this.UI.insert_child_at_index(this.UI.icon, 1);
-
-        // if (this.settings.icon.toLowerCase() == "guillotine-symbolic")
-        //     this.icon.gicon = Gio.icon_new_for_string(Me.path + "/guillotine-symbolic.svg");
-        // else
-        //     this.icon.icon_name = this.settings.icon;
-
-        // button
-        this.button = new UI.panelMenu.Button(0.0, "guillotine", false);
+        this.button = new uiPanelMenu.Button(0.0, "guillotine", false);
         this.button.add_child(this.icon);
 
         for (const item in this.menu) {
             this.button.menu.addMenuItem(this.menu[item].UI);
         }
-        UI.main.panel.addToStatusArea("guillotine", this.button);
+        uiMain.panel.addToStatusArea("guillotine", this.button);
     }
 
     disable() {
-        info("Disabling " + Me.metadata.name);
+        info("Disabling " + this.metadata.name);
         for (const item in this.menu) {
             this.menu[item].cancel();
         }
@@ -520,7 +501,7 @@ class Guillotine {
 
     loadConfig() {
         // determine config location
-        let configFilename = imports.misc.extensionUtils.getSettings().get_string("config");
+        let configFilename = this.getSettings().get_string("config");
         configFilename = configFilename || GLib.get_home_dir() + "/.config/guillotine.json";
         debug("Config location: " + configFilename);
 
@@ -528,7 +509,7 @@ class Guillotine {
         // check if custom config exists; restore default config file otherwise
         this.configFile = Gio.File.new_for_path(configFilename);
         if (!this.configFile.query_exists(null)) {
-            let defaultConfig = Gio.File.new_for_path(Me.path + "/default.json");
+            let defaultConfig = Gio.File.new_for_path(this.path + "/default.json");
             defaultConfig.copy(this.configFile, 0, null, null);
             info("Config not found @ location: " + configFilename + ". Default config restored.");
         }
@@ -542,7 +523,8 @@ class Guillotine {
         this.config = {};
         let [ok, content] = GLib.file_get_contents(configFilename);
         if (ok) {
-            let contentString = imports.byteArray.toString(content);
+            const decoder = new TextDecoder('utf-8');
+            let contentString = decoder.decode(content);
             this.config = JSON.parse(contentString);
         } else throw new Error("Could not load config file.");
     }
@@ -585,7 +567,7 @@ function parseProperties(source, target, checks) {
     }
 }
 
-function parseMenu(menu) {
+function parseMenu(menu, extPath) {
     let items = [];
     let types = [];
     types["command"] = Command;
@@ -597,17 +579,9 @@ function parseMenu(menu) {
         for (const item in menu) {
             if (!("type" in menu[item])) throw new Error("Invalid menu item: missing 'type' property");
             if (typeof types[menu[item].type.toLowerCase()] === "undefined") throw new Error("Invalid value for property 'type': " + menu[item].type);
-            let menuItem = new types[menu[item].type.toLowerCase()](menu[item]);
+            let menuItem = new types[menu[item].type.toLowerCase()](menu[item], extPath);
             items.push(menuItem);
         }
     }
     return items;
-}
-
-/******************************************************************************/
-/***** INIT                                                               *****/
-/******************************************************************************/
-
-function init(meta) {
-    return new Guillotine(meta);
 }
