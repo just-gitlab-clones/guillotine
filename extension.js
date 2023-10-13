@@ -17,7 +17,7 @@ const INFO = 1;
 const WARNING = 2;
 const ERROR = 3;
 const OFF = 4;
-var LogLevel = DEBUG;
+var LogLevel = WARNING;
 var NotificationLevel = OFF;
 
 /******************************************************************************/

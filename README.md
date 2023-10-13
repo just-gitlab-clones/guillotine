@@ -381,6 +381,8 @@ Be aware that the global option is a `string` while the option for `command` and
     [Paul Dugas](https://gitlab.com/pauldugas))
   - `keepMenuOpen` implemented
   - documentation error fixed for `submenu`
+- v21: 13.10.2023
+  - set default `loglevel` back to `warning`
 
 ## ToDo
 
