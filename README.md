@@ -376,6 +376,11 @@ Be aware that the global option is a `string` while the option for `command` and
     - this version update required some bigger, breaking changes
     - compatibility to previous gnome versions is lost
   - removed `interval` on switches (deprecated since v8)
+- v20: 13.10.2023
+  - menu is centered under the button (provided by
+    [Paul Dugas](https://gitlab.com/pauldugas))
+  - `keepMenuOpen` implemented
+  - documentation error fixed for `submenu`
 
 ## ToDo
 
@@ -388,6 +393,7 @@ The extension is considered stable. No further improvements are planned for now.
 - aliakseiz:
   - [github](https://github.com/aliakseiz)
   - [gitlab](https://gitlab.com/aliakseiz)
+- [Paul Dugas](https://gitlab.com/pauldugas)
 
 ## License
 
