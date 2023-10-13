@@ -282,7 +282,7 @@ class Switch {
     this.UIItem.connect("activate", this.switch.bind(this));
     this.mode = "interval";
     if ("check" in this) {
-      this.timer = GLib.timeout_add(
+      this.timer = GLib.timeout_add_seconds(
         GLib.PRIORITY_DEFAULT,
         0,
         this.test.bind(this, true)
@@ -736,6 +736,12 @@ export default class Guillotine extends Extension {
     }
     if (this.configFile) {
       this.configFile = null;
+    }
+    if (this.icon) {
+      this.icon = null;
+    }
+    if (this.menu) {
+      this.menu = null;
     }
   }
 
