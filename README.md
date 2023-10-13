@@ -147,6 +147,16 @@ The configuration has two segments: `settings` and `menu`.
   - `info`
   - `warning`
   - `error`
+- `keepMenuOpen` (string): whether the menu should stay open after an item has
+  been selected. This is the global option, which may be overriden by
+  `keepMenuOpen` for specific items of type `command` or `switch`. Valid values
+  are:
+  - not defined (default): the default behaviour of gnome applies, i.e., the
+    menu is closed after activating a menu item
+  - `command`: the default behaviour for `command` items is to keep the menu
+    open
+  - `switch`: the default behaviour for `switch` items is to keep the menu open
+  - `all`: the default behaviour for all items is to keep the menu open
 
 ### menu
 
@@ -165,6 +175,8 @@ The menu is an array of items, each being one of the following types.
     executed in parallel
 - `killOnDisable` (boolean): whether the process gets killed when the extension
   gets disabled, defaults to `true`
+- `keepMenuOpen` (boolean): whether the menu should stay open after the
+  `command` has been selected in the menu. The default value is `undefined`.
 
 #### 2. switch
 
@@ -178,6 +190,8 @@ The menu is an array of items, each being one of the following types.
   - other exit code: the service is stopped, the switch is `off`
 - `interval_s` (number): time between 2 checks in seconds
 - `interval_ms` (number): time between 2 checks in milliseconds
+- `keepMenuOpen` (boolean): whether the menu should stay open after the `switch`
+  has been selected in the menu. The default value is `undefined`.
 
 If no interval is defined, it defaults to `interval_s` at 10 seconds. If
 multiple intervals are defined, `interval_s` has highest priority. The interval
@@ -276,6 +290,17 @@ distribution. `Arch Linux` provides the apps in packages
 [`gtk3-demos`](https://archlinux.org/packages/extra/x86_64/gtk3-demos/) and
 [`gtk4-demos`](https://archlinux.org/packages/extra/x86_64/gtk4-demos/)
 respectively.
+
+### `keepMenuOpen`
+
+`keepMenuOpen` may be defined as a global option and for each `command` or
+`switch` item individually. If a value is defined for a specific item, the
+global value is ignored. This allows to globally define to keep the menu open
+but for a specific item to override the option and close the menu after this
+specific item has been selected.
+
+Be aware that the global option is a `string` while the option for `command` and
+`switch` is a `boolean`.
 
 ## Change History
 

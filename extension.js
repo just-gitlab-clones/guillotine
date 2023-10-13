@@ -17,7 +17,7 @@ const INFO = 1;
 const WARNING = 2;
 const ERROR = 3;
 const OFF = 4;
-var LogLevel = WARNING;
+var LogLevel = DEBUG;
 var NotificationLevel = OFF;
 
 /******************************************************************************/
@@ -87,10 +87,11 @@ const commandChecks = [
     default: "multipleinstances",
   },
   { name: "killOnDisable", type: "boolean", default: true },
+  { name: "keepMenuOpen", type: "boolean" },
 ];
 
 class Command {
-  constructor(properties, extPath) {
+  constructor(properties, extPath, globalKeepMenuOpen) {
     this.canceled = false;
     let self = {};
 
@@ -98,36 +99,49 @@ class Command {
     parseProperties(properties, self, commandChecks);
     Object.assign(this, self);
     // setup UI
-    this.UI = new uiPopupMenu.PopupMenuItem(this.title);
+    this.UIItem = new uiPopupMenu.PopupMenuItem(this.title);
+    if (!("keepMenuOpen" in this)) {
+      if (globalKeepMenuOpen === "command" || globalKeepMenuOpen === "all") {
+        this.keepMenuOpen = true;
+      } else {
+        this.keepMenuOpen = false;
+      }
+    }
+    if (this.keepMenuOpen) {
+      this.UI = new uiPopupMenu.PopupMenuSection();
+      this.UI.actor.add_actor(this.UIItem.actor);
+    } else {
+      this.UI = this.UIItem;
+    }
     if ("icon" in this) {
-      this.UI.icon = new St.Icon({
+      this.UIItem.icon = new St.Icon({
         style_class: "popup-menu-icon",
       });
       if (this.icon.toLowerCase() === "guillotine-symbolic")
-        this.UI.icon.gicon = Gio.icon_new_for_string(
+        this.UIItem.icon.gicon = Gio.icon_new_for_string(
           extPath + "/guillotine-symbolic.svg"
         );
       else if (this.icon.charAt(0) == "/")
-        this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
+        this.UIItem.icon.gicon = Gio.icon_new_for_string(this.icon);
       else if (this.icon.charAt(0) == "~") {
         let home = GLib.get_home_dir();
         this.icon = this.icon.substr(1);
         this.icon = home.concat(this.icon);
-        this.UI.icon.set_gicon(Gio.icon_new_for_string(this.icon));
-      } else this.UI.icon.icon_name = this.icon;
-      this.UI.insert_child_at_index(this.UI.icon, 1);
+        this.UIItem.icon.set_gicon(Gio.icon_new_for_string(this.icon));
+      } else this.UIItem.icon.icon_name = this.icon;
+      this.UIItem.insert_child_at_index(this.UIItem.icon, 1);
     }
-    if (!("command" in this)) this.UI.setSensitive(false);
+    if (!("command" in this)) this.setSensitive(false);
 
     // setup callbacks
-    this.UI.connect("activate", this.execute.bind(this));
+    this.UIItem.connect("activate", this.execute.bind(this));
     this.processes = {};
     debug("Menu item '" + this.title + "' initialized.");
   }
 
   execute() {
     if (this.instancing === "singleinstance") {
-      this.UI.setSensitive(false);
+      this.setSensitive(false);
     }
     try {
       let [_, argv] = GLib.shell_parse_argv(this.command);
@@ -143,7 +157,7 @@ class Command {
       this.processes[pid] = subprocess;
       debug("Process for '" + this.title + "' [" + pid + "] started.");
     } catch (e) {
-      this.UI.setSensitive(false);
+      this.setSensitive(false);
       error("Spawning process for '" + this.title + "' failed.", e);
     }
   }
@@ -183,7 +197,7 @@ class Command {
             "] finished without error."
         );
     }
-    if (!this.canceled) this.UI.setSensitive(true);
+    if (!this.canceled) this.setSensitive(true);
   }
 
   cancel() {
@@ -201,6 +215,11 @@ class Command {
         this.processes[pid].force_exit();
       }
   }
+
+  setSensitive(bool) {
+    this.UI.setSensitive(bool);
+    this.UIItem.setSensitive(bool);
+  }
 }
 
 const switchChecks = [
@@ -211,10 +230,11 @@ const switchChecks = [
   { name: "check", type: "string" },
   { name: "interval_s", type: "number" },
   { name: "interval_ms", type: "number" },
+  { name: "keepMenuOpen", type: "boolean" },
 ];
 
 class Switch {
-  constructor(properties, extPath) {
+  constructor(properties, extPath, globalKeepMenuOpen) {
     this.canceled = false;
     let self = {};
 
@@ -222,31 +242,44 @@ class Switch {
     parseProperties(properties, self, switchChecks);
     Object.assign(this, self);
 
-    this.UI = new uiPopupMenu.PopupSwitchMenuItem(this.title, false);
+    this.UIItem = new uiPopupMenu.PopupSwitchMenuItem(this.title, false);
+    if (!("keepMenuOpen" in this)) {
+      if (globalKeepMenuOpen === "switch" || globalKeepMenuOpen === "all") {
+        this.keepMenuOpen = true;
+      } else {
+        this.keepMenuOpen = false;
+      }
+    }
+    if (this.keepMenuOpen) {
+      this.UI = new uiPopupMenu.PopupMenuSection();
+      this.UI.actor.add_actor(this.UIItem.actor);
+    } else {
+      this.UI = this.UIItem;
+    }
 
     if ("icon" in this) {
-      this.UI.icon = new St.Icon({
+      this.UIItem.icon = new St.Icon({
         style_class: "popup-menu-icon",
       });
       if (this.icon.toLowerCase() === "guillotine-symbolic")
-        this.UI.icon.gicon = Gio.icon_new_for_string(
+        this.UIItem.icon.gicon = Gio.icon_new_for_string(
           extPath + "/guillotine-symbolic.svg"
         );
       else if (this.icon.charAt(0) == "/")
-        this.UI.icon.gicon = Gio.icon_new_for_string(this.icon);
+        this.UIItem.icon.gicon = Gio.icon_new_for_string(this.icon);
       else if (this.icon.charAt(0) == "~") {
         let home = GLib.get_home_dir();
         this.icon = this.icon.substr(1);
         this.icon = home.concat(this.icon);
-        this.UI.icon.set_gicon(Gio.icon_new_for_string(this.icon));
-      } else this.UI.icon.icon_name = this.icon;
-      this.UI.insert_child_at_index(this.UI.icon, 1);
+        this.UIItem.icon.set_gicon(Gio.icon_new_for_string(this.icon));
+      } else this.UIItem.icon.icon_name = this.icon;
+      this.UIItem.insert_child_at_index(this.UIItem.icon, 1);
     }
 
-    this.UI.setSensitive(false);
+    this.setSensitive(false);
 
     // setup callbacks
-    this.UI.connect("activate", this.switch.bind(this));
+    this.UIItem.connect("activate", this.switch.bind(this));
     this.mode = "interval";
     if ("check" in this) {
       this.timer = GLib.timeout_add(
@@ -274,14 +307,14 @@ class Switch {
 
   switch() {
     // don't allow another interaction with this item
-    this.UI.setSensitive(false);
+    this.setSensitive(false);
     // cancel all automatic interval checks & signal manual switching
     if ("timer" in this) GLib.source_remove(this.timer);
     delete this.timer;
     this.mode = "switch";
 
     let command;
-    if (this.UI.state) command = this.start;
+    if (this.UIItem.state) command = this.start;
     else command = this.stop;
 
     try {
@@ -295,14 +328,14 @@ class Switch {
       let pid = subprocess.get_identifier();
       subprocess.wait_check_async(
         null,
-        this.switched.bind(this, pid, this.UI.state)
+        this.switched.bind(this, pid, this.UIItem.state)
       );
       this.processes[pid] = subprocess;
-      if (this.UI.state)
+      if (this.UIItem.state)
         debug("Start process for switch '" + this.title + "' started.");
       else debug("Stop process for switch '" + this.title + "' started.");
     } catch (e) {
-      if (this.UI.state)
+      if (this.UIItem.state)
         error(
           "Spawning start process for switch '" +
             this.title +
@@ -472,13 +505,11 @@ class Switch {
             "] exited without error --> switch is turned on."
         );
 
-      if (result) this.UI.setToggleState(false);
-      else this.UI.setToggleState(true);
+      if (result) this.UIItem.setToggleState(false);
+      else this.UIItem.setToggleState(true);
 
-      if (!this.canceled && result && "start" in this)
-        this.UI.setSensitive(true);
-      if (!this.canceled && !result && "stop" in this)
-        this.UI.setSensitive(true);
+      if (!this.canceled && result && "start" in this) this.setSensitive(true);
+      if (!this.canceled && !result && "stop" in this) this.setSensitive(true);
 
       if (!this.canceled) {
         this.mode = "interval";
@@ -515,6 +546,11 @@ class Switch {
       this.processes[pid].force_exit();
     }
   }
+
+  setSensitive(bool) {
+    this.UI.setSensitive(bool);
+    this.UIItem.setSensitive(bool);
+  }
 }
 
 const menuChecks = [
@@ -524,7 +560,7 @@ const menuChecks = [
 ];
 
 class SubMenu {
-  constructor(properties, extPath) {
+  constructor(properties, extPath, globalKeepMenuOpen) {
     let self = {};
     // sanity checks
     parseProperties(properties, self, menuChecks);
@@ -549,7 +585,7 @@ class SubMenu {
       this.UI.insert_child_at_index(this.UI.icon, 1);
     }
 
-    this.items = parseMenu(self.items, extPath);
+    this.items = parseMenu(self.items, extPath, globalKeepMenuOpen);
     for (const item in this.items) {
       this.UI.menu.addMenuItem(this.items[item].UI);
     }
@@ -589,6 +625,11 @@ const settingsChecks = [
     type: "string",
     values: ["debug", "info", "warning", "error"],
   },
+  {
+    name: "keepMenuOpen",
+    type: "string",
+    values: ["all", "command", "switch"],
+  },
 ];
 
 export default class Guillotine extends Extension {
@@ -620,7 +661,11 @@ export default class Guillotine extends Extension {
 
       this.settings = {};
       parseProperties(this.config.settings, this.settings, settingsChecks);
-      this.menu = parseMenu(this.config.menu, this.path);
+      this.menu = parseMenu(
+        this.config.menu,
+        this.path,
+        this.settings.keepMenuOpen
+      );
     } catch (e) {
       error("Loading config failed.", e);
       // icon
@@ -819,7 +864,7 @@ function parseProperties(source, target, checks) {
   }
 }
 
-function parseMenu(menu, extPath) {
+function parseMenu(menu, extPath, globalKeepMenuOpen) {
   let items = [];
   let types = [];
   types["command"] = Command;
@@ -837,7 +882,8 @@ function parseMenu(menu, extPath) {
         );
       let menuItem = new types[menu[item].type.toLowerCase()](
         menu[item],
-        extPath
+        extPath,
+        globalKeepMenuOpen
       );
       items.push(menuItem);
     }
