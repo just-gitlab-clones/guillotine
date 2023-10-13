@@ -206,7 +206,7 @@ deprecated in the near future if `interval_s` prooves to be superior.
 
 #### 3. submenu
 
-- `type`: `switch`
+- `type`: `submenu`
 - `title` (string): title to show
 - `icon` (string): path or name of an [icon](#icons)
 - `items` ([]): an arry of items, see [menu](#menu)
