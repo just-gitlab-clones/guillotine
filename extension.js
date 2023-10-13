@@ -472,7 +472,7 @@ export default class Guillotine extends Extension {
             this.UI.icon.set_gicon(Gio.icon_new_for_string(this.settings.icon));
         }
         else this.icon.icon_name = this.settings.icon;
-        this.button = new uiPanelMenu.Button(0.0, "guillotine", false);
+        this.button = new uiPanelMenu.Button(0.5, "guillotine", false);
         this.button.add_child(this.icon);
 
         for (const item in this.menu) {
