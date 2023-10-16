@@ -3,14 +3,12 @@
 SRC_DIR="$(dirname "$(readlink -m "${0}")")"
 DEST_DIR="$(dirname ~/.local/share/gnome-shell/extensions/guillotine2@fopdoodle.net/extension.js)"
 
-echo SRC_DIR: $SRC_DIR
-echo DEST_DIR: $DEST_DIR
 if test -d "$DEST_DIR"; then
-  echo "Directory `$DEST_DIR` already exists. Deleting..."
+  echo "Deleting '$DEST_DIR'..."
   rm -R "$DEST_DIR"
 fi
 
-echo "Installing in `$DEST_DIR`..."
+echo "Installing in '$DEST_DIR'..."
 mkdir -p $DEST_DIR
 
 cp -R "$SRC_DIR/schemas" "$DEST_DIR/"
