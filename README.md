@@ -11,6 +11,14 @@ customizable menu that enables you to launch commands and toggle services.
 
 ![example.png](example.png)
 
+## Installation
+
+- directly from the repository
+
+```sh
+git clone https://gitlab.com/ente76/guillotine.git && sh guillotine/install.sh
+```
+
 ## Configuration
 
 If no configuration is found, a default config is restored at
@@ -148,7 +156,7 @@ The configuration has two segments: `settings` and `menu`.
   - `warning`
   - `error`
 - `keepMenuOpen` (string): whether the menu should stay open after an item has
-  been selected. This is the global option, which may be overriden by
+  been selected. This is the global option, which may be overridden by
   `keepMenuOpen` for specific items of type `command` or `switch`. Valid values
   are:
   - not defined (default): the default behaviour of gnome applies, i.e., the
@@ -376,6 +384,9 @@ Be aware that the global option is a `string` while the option for `command` and
     - this version update required some bigger, breaking changes
     - compatibility to previous gnome versions is lost
   - removed `interval` on switches (deprecated since v8)
+
+Versions not (yet) available on extension.gnome.org:
+
 - v20: 13.10.2023
   - menu is centered under the button (provided by
     [Paul Dugas](https://gitlab.com/pauldugas))
@@ -383,6 +394,11 @@ Be aware that the global option is a `string` while the option for `command` and
   - documentation error fixed for `submenu`
 - v21: 13.10.2023
   - set default `loglevel` back to `warning`
+- v22: tbd
+  - feedback from extensions.gnome.org: null out some variables when the
+    extension gets disabled
+  - implement install script for manual installation directly from the
+    repository
 
 ## ToDo
 
