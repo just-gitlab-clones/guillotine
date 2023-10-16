@@ -13,11 +13,13 @@ customizable menu that enables you to launch commands and toggle services.
 
 ## Installation
 
-- directly from the repository
+- from [extensions.gnome.org](https://extensions.gnome.org/extension/3981/guillotine/)
+  (may be outdated)
+- directly from the repository (no automatic updates)
 
-```sh
-git clone https://gitlab.com/ente76/guillotine.git && sh guillotine/install.sh
-```
+  ```sh
+  git clone https://gitlab.com/ente76/guillotine.git && sh guillotine/install.sh
+  ```
 
 ## Configuration
 
