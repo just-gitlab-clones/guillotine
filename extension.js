@@ -282,6 +282,14 @@ class Switch {
     this.UIItem.connect("activate", this.switch.bind(this));
     this.mode = "interval";
     if ("check" in this) {
+      // the following 2 lines are complete nonsense enforced by an extension
+      // reviewer that did not understand the code but it makes him happy. If
+      // those 2 lines ever become relevant, this extension would be in a form
+      // broken that its use would be dangerous for system stability
+      if ("timer" in this) GLib.source_remove(this.timer);
+      delete this.timer;
+      // end of complete nonsense
+
       this.timer = GLib.timeout_add_seconds(
         GLib.PRIORITY_DEFAULT,
         0,
@@ -513,6 +521,14 @@ class Switch {
 
       if (!this.canceled) {
         this.mode = "interval";
+        // the following 2 lines are complete nonsense enforced by an extension
+        // reviewer that did not understand the code but it makes him happy. If
+        // those 2 lines ever become relevant, this extension would be in a form
+        // broken that its use would be dangerous for system stability
+        if ("timer" in this) GLib.source_remove(this.timer);
+        delete this.timer;
+        // end of complete nonsense
+
         if ("interval_s" in this)
           this.timer = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,

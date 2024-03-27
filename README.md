@@ -403,6 +403,10 @@ Versions not (yet) available on extension.gnome.org:
   - implement install script for manual installation directly from the
     repository
   - gnome 46 compatibility
+- v23: 27.03.2023
+  - a gnome extension reviewer that did not understand the code insisted in
+    adding some extra checks that hopefully never become relevant because the
+    extension would be heavily broken otherwise.
 
 ## ToDo
 
