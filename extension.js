@@ -109,7 +109,7 @@ class Command {
     }
     if (this.keepMenuOpen) {
       this.UI = new uiPopupMenu.PopupMenuSection();
-      this.UI.actor.add_actor(this.UIItem.actor);
+      this.UI.actor.add_child(this.UIItem.actor);
     } else {
       this.UI = this.UIItem;
     }
@@ -252,7 +252,7 @@ class Switch {
     }
     if (this.keepMenuOpen) {
       this.UI = new uiPopupMenu.PopupMenuSection();
-      this.UI.actor.add_actor(this.UIItem.actor);
+      this.UI.actor.add_child(this.UIItem.actor);
     } else {
       this.UI = this.UIItem;
     }
