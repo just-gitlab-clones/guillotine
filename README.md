@@ -387,9 +387,7 @@ Be aware that the global option is a `string` while the option for `command` and
     - this version update required some bigger, breaking changes
     - compatibility to previous gnome versions is lost
   - removed `interval` on switches (deprecated since v8)
-
-Versions not (yet) available on extension.gnome.org:
-
+  - last version published on extension.gnome.org
 - v20: 13.10.2023
   - menu is centered under the button (provided by
     [Paul Dugas](https://gitlab.com/pauldugas))
@@ -397,16 +395,18 @@ Versions not (yet) available on extension.gnome.org:
   - documentation error fixed for `submenu`
 - v21: 13.10.2023
   - set default `loglevel` back to `warning`
-- v22: 27.03.2024
+- v22: 27.03.2024 (unpublished)
   - feedback from extensions.gnome.org: null out some variables when the
     extension gets disabled
   - implement install script for manual installation directly from the
     repository
   - gnome 46 compatibility
-- v23: 27.03.2023
+- v23: 27.03.2023 (unpublished)
   - a gnome extension reviewer that did not understand the code insisted in
     adding some extra checks that hopefully never become relevant because the
     extension would be heavily broken otherwise.
+- v24:
+  - reversed / adjusted changes from version 23
 
 ## ToDo
 
