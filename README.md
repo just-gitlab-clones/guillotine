@@ -407,6 +407,8 @@ Be aware that the global option is a `string` while the option for `command` and
     extension would be heavily broken otherwise.
 - v24:
   - reversed / adjusted changes from version 23
+- v25:
+  - gnome 47 compatibility
 
 ## ToDo
 

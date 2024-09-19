@@ -5,7 +5,11 @@
   "version": 24,
   "url": "https://gitlab.com/ente76/guillotine/",
   "settings-schema": "org.gnome.shell.extensions.guillotine",
-  "shell-version": ["45", "46"],
+  "shell-version": [
+    "45",
+    "46",
+    "47"
+  ],
   "donations": {
     "buymeacoffee": "ente"
   }
