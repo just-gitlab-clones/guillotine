@@ -409,6 +409,8 @@ Be aware that the global option is a `string` while the option for `command` and
   - reversed / adjusted changes from version 23
 - v25:
   - gnome 47 compatibility
+- v26:
+  - gnome 48 compatibility
 
 ## ToDo
 
