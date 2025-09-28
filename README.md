@@ -411,6 +411,8 @@ Be aware that the global option is a `string` while the option for `command` and
   - gnome 47 compatibility
 - v26:
   - gnome 48 compatibility
+- v27: 28.09.2025
+  - gnome 49 compatibility
 
 ## ToDo
 
